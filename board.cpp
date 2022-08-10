@@ -1,5 +1,5 @@
 #include <iostream>
-#define TESTING true
+#define TESTING false
 
 #include "board.hpp"
 
