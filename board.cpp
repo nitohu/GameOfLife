@@ -31,10 +31,6 @@ void Board::initializeBoard() {
     }
 }
 
-bool Board::isRunning() {
-    return running;
-}
-
 int Board::getGeneration() {
     return generation;
 }

@@ -3,7 +3,6 @@ protected:
     int w, h;
     int generation;
     bool *board;
-    bool running;
 
     void initializeBoard();
 
@@ -16,7 +15,6 @@ public:
 
     virtual ~Board();
 
-    bool isRunning();
     int getGeneration();
 
     void setSize(int w, int h);
