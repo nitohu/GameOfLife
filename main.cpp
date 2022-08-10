@@ -27,7 +27,11 @@ int main() {
         b.printBoard(false);
     }
 
-    b.update();
+    for (int i = 0; i < 5; ++i) {
+        std::cout << "===== Generation #" << b.getGeneration()+1 << " =====\n";
+        b.update();
+        b.printBoard(false);
+    }
 
     return 0;
 }

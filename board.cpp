@@ -6,17 +6,19 @@
 Board::Board() {
     w = 0;
     h = 0;
+    generation = 0;
 }
 
 Board::Board(int w, int h) {
     this->w = w;
     this->h = h;
+    generation = 0;
 
     initializeBoard();
 }
 
 Board::~Board() {
-    delete this->board;
+    delete[] this->board;
 }
 
 void Board::initializeBoard() {
@@ -31,6 +33,10 @@ void Board::initializeBoard() {
 
 bool Board::isRunning() {
     return running;
+}
+
+int Board::getGeneration() {
+    return generation;
 }
 
 void Board::setSize(int w, int h) {
@@ -66,58 +72,94 @@ void Board::printBoard(bool showPos) {
     std::cout << '\n';
 }
 
-int Board::getNeighborCells(int cellPos) {
+int Board::getNeighborCells(int cellPos, bool *cB) {
     /*
      * a  b  c
      * d  cP e
      * f  g  h
      */
+    // Cellpos -> Position starting from 1 (good for border calculation stuff)
+    // pos -> position starting from 0 (can be used as an index)
+    int pos = cellPos - 1;
     int c = 0;
-    bool b = false, d = false, e = false, g = false;
-    // Check if b exists
+    bool top = false, left = false, right = false, bottom = false;
+    if (cellPos == 10 || cellPos == 5 || cellPos == 3)
+        c = 0;
+    // Check if top side exists (& b)
+    // Need to substract 1 from cellPos, since it starts from 1
     if ((cellPos - w) > 0) {
-        c++;
-        b = true;
+        top = true;
+        // Add one if cell is alive
+        if (*(cB + pos - w)) c++;
     }
-    // Check if d exists
+    // Check if left side exists (&d)
     // If cellPos is on the most left side on the matrix, it cannot have left neighbors
     if ((cellPos - 1) > 0 && (cellPos-1)%w != 0) {
-        c++;
-        d = true;
+        left = true;
+        if (*(cB + pos - 1)) c++;
     }
-    // Check if e exists
+    // Check if right side exists (& e)
     // If cellPos is divisible by w (=> on the most right side of the matrix),
     // it cannot have a neighbor on its right side (would be on newline)
     if ((cellPos + 1) <= w*h && (cellPos) % w != 0) {
-        c++;
-        e = true;
+        right = true;
+        if (*(cB + pos + 1)) c++;
     }
-    // Check if g exists
+    // Check if bottom side exists (& g)
     if ((cellPos + w) <= w*h) {
-        c++;
-        g = true;
+        bottom = true;
+        if (*(cB + pos + w)) c++;
     }
-    // Check if a exists
-    if (b && d) c++;
+    // Check if a exists & is alive
+    if (top && left)
+        if (*(cB + pos - w - 1)) c++;
     // Check if C exists
-    if (b && e) c++;
+    if (top && right)
+        if (*(cB + pos - w + 1)) c++;
     // Check if F exists
-    if (d && g) c++;
+    if (left && bottom)
+        if (*(cB + pos + w - 1)) c++;
     // Check if H exists
-    if (e && g) c++;
+    if (right && bottom)
+        if (*(cB + pos + w + 1)) c++;
     return c;
 }
 
 void Board::update() {
+    // Copy the current game board, since changes of cells in this round should not affect other cells yet
+    bool *oldBoard = new bool[w*h];
+    // Copy current board into old
+    for(int i = 0; i < w*h; i++) {
+        *(oldBoard + i) = *(board + i);
+    }
+    // Update each cell
     for (int i = 1; i < w*h+1; i++) {
-        // Update each cell by the following rules:
-        // 1. Any live cell with two or three live neighbours survives
-        // 2. Any dead cell with three live neighbours becomes a live cell
-        // 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead
-        bool* cell = this->board + i;
-        int count = getNeighborCells(i);
-        std::cout << "Cell " << i << " has " << count << " neighbors." << std::endl;
+        // Get current cell
+        bool* cell = board + i - 1;
+        // Get neighbor count of current cell
+        int count = getNeighborCells(i, oldBoard);
+        // std::cout << "Cell " << i  << " (" << (*(oldBoard + i - 1) ? "alive" : "dead") << ") has " << count << " neighbors.";
+        // Update cell based on game rules
+        updateCell(cell, count);
+        // std::cout << " => " << *cell << std::endl;
+    }
+    generation++;
+    delete[] oldBoard;
+}
 
+void Board::updateCell(bool *cell, int neighborCount) {
+    // Update each cell by the following rules:
+    // 1. Any live cell with two or three live neighbours survives (=> implies that cell is already alive)
+    if (*cell && (neighborCount == 2 || neighborCount == 3)) {
+        *cell = true;
+    }
+    // 2. Any dead cell with three live neighbours becomes a live cell
+    else if (!*cell && neighborCount == 3) {
+        *cell = true;
+    }
+    // 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead
+    else {
+        *cell = false;
     }
 }
 
