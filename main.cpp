@@ -27,7 +27,13 @@ int main() {
         b.printBoard(false);
     }
 
-    for (int i = 0; i < 5; ++i) {
+    int gens = 5;
+    std::cout << "Please enter the number of generations that should be simulated (Default 5): ";
+    std::cin >> gens;
+    std::cin.clear();
+    if (gens < 1) gens = 5;
+
+    for (int i = 0; i < gens; ++i) {
         std::cout << "===== Generation #" << b.getGeneration()+1 << " =====\n";
         b.update();
         b.printBoard(false);

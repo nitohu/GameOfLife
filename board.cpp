@@ -138,10 +138,8 @@ void Board::update() {
         bool* cell = board + i - 1;
         // Get neighbor count of current cell
         int count = getNeighborCells(i, oldBoard);
-        // std::cout << "Cell " << i  << " (" << (*(oldBoard + i - 1) ? "alive" : "dead") << ") has " << count << " neighbors.";
         // Update cell based on game rules
         updateCell(cell, count);
-        // std::cout << " => " << *cell << std::endl;
     }
     generation++;
     delete[] oldBoard;
