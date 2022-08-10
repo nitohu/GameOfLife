@@ -25,5 +25,7 @@ int main() {
         b.printBoard(false);
     }
 
+    b.update();
+
     return 0;
 }
