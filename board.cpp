@@ -63,78 +63,61 @@ void Board::printBoard(bool showPos) {
             std::cout << "=";
         }
     }
+    std::cout << '\n';
 }
 
-void Board::getNeighborCells(int cellPos, int *r) {
-    std::cout << "Finding neighbor cells for cell " << cellPos << "..." << std::endl;
-    std::cout << "a   b   c\nd   cP  e\nf   g   h" << std::endl;
+int Board::getNeighborCells(int cellPos) {
     /*
      * a  b  c
      * d  cP e
      * f  g  h
      */
-    int *p = r;
-    // Search for a
-    if ((cellPos - w - 1) > 0 && (cellPos - w - 1) % w != 0) {
-        *p = cellPos - w - 1;
-        std::cout << "Found a: " << *p << std::endl;
+    int c = 0;
+    bool b = false, d = false, e = false, g = false;
+    // Check if b exists
+    if ((cellPos - w) > 0) {
+        c++;
+        b = true;
     }
-    p++;
-    // Search for b
-    if ((cellPos - w) > 0 && (cellPos - w) % w != 0) {
-        *p = cellPos - w;
-        std::cout << "Found b: " << *p << std::endl;
+    // Check if d exists
+    // If cellPos is on the most left side on the matrix, it cannot have left neighbors
+    if ((cellPos - 1) > 0 && (cellPos-1)%w != 0) {
+        c++;
+        d = true;
     }
-    p++;
-    // Search for c
-    if ((cellPos - w + 1) > 0 && (cellPos + 1) < w*h && (cellPos - w + 1) % w != 0) {
-        *p = cellPos - w + 1;
-        std::cout << "Found c: " << *p << std::endl;
+    // Check if e exists
+    // If cellPos is divisible by w (=> on the most right side of the matrix),
+    // it cannot have a neighbor on its right side (would be on newline)
+    if ((cellPos + 1) <= w*h && (cellPos) % w != 0) {
+        c++;
+        e = true;
     }
-    p++;
-    // Search for d
-    if ((cellPos - 1) > 0 && (cellPos - 1) % w != 0) {
-        *p = cellPos - 1;
-        std::cout << "Found d: " << *p << std::endl;
+    // Check if g exists
+    if ((cellPos + w) <= w*h) {
+        c++;
+        g = true;
     }
-    p++;
-    // Search for e
-    if ((cellPos + 1) < w*h && (cellPos + 1) % w != 0) {
-        *p = cellPos + 1;
-        std::cout << "Found e: " << *p << std::endl;
-    }
-    p++;
-    // Search for f
-    if ((cellPos + w - 1) > 0 && (cellPos + w - 1) < w*h && (cellPos + w - 1) % w != 0) {
-        *p = cellPos + w - 1;
-        std::cout << "Found f: " << *p << std::endl;
-    }
-    p++;
-    // Search for g
-    if ((cellPos + w) < w*h && (cellPos + w) % w != 0) {
-        *p = cellPos + w;
-        std::cout << "Found g: " << *p << std::endl;
-    }
-    p++;
-    // Search for h
-    if ((cellPos + w + 1) < w*h && (cellPos + w + 1) % w != 0) {
-        *p = cellPos + w + 1;
-        std::cout << "Found h: " << *p << std::endl;
-    }
+    // Check if a exists
+    if (b && d) c++;
+    // Check if C exists
+    if (b && e) c++;
+    // Check if F exists
+    if (d && g) c++;
+    // Check if H exists
+    if (e && g) c++;
+    return c;
 }
 
 void Board::update() {
-    for (int i = 1; i < w*h + 1; i++) {
+    for (int i = 1; i < w*h+1; i++) {
         // Update each cell by the following rules:
         // 1. Any live cell with two or three live neighbours survives
         // 2. Any dead cell with three live neighbours becomes a live cell
         // 3. All other live cells die in the next generation. Similarly, all other dead cells stay dead
         bool* cell = this->board + i;
-        int neighborPos[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-        getNeighborCells(i, neighborPos);
-        for (int j = 0; j < 8; ++j) {
-            std::cout << "Neighbor positions: " << neighborPos[j] << std::endl;
-        }
+        int count = getNeighborCells(i);
+        std::cout << "Cell " << i << " has " << count << " neighbors." << std::endl;
+
     }
 }
 

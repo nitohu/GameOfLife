@@ -6,7 +6,7 @@ protected:
 
     void initializeBoard();
 
-    void getNeighborCells(int cell, int *r);
+    int getNeighborCells(int cell);
 
 public:
     Board();

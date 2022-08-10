@@ -9,6 +9,8 @@ int main() {
     std::cin.clear();
     std::cout << "Please enter height: ";
     std::cin >> h;
+    std::cin.clear();
+    std::cout << "===========" << std::endl;
 
     Board b = Board(w, h);
     b.printBoard(true);
