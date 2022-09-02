@@ -35,6 +35,11 @@ int Board::getGeneration() {
     return generation;
 }
 
+int Board::getCellState(unsigned int pos) {
+    if (pos > (w*h-1)) return false;
+    return *(board + pos);
+}
+
 void Board::setSize(int w, int h) {
     this->w = w;
     this->h = h;

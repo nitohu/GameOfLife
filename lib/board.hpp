@@ -16,6 +16,7 @@ public:
     virtual ~Board();
 
     int getGeneration();
+    virtual int getCellState(unsigned int pos);
 
     void setSize(int w, int h);
     virtual void toggleCell(unsigned int pos);

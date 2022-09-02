@@ -10,6 +10,7 @@
 #include <vector>
 
 #include "../lib/board.hpp"
+#include "GameButton.h"
 
 class MainWindow : public QWidget {
     Q_OBJECT
@@ -21,11 +22,14 @@ public:
 private:
     Board *board;
 
-    std::vector<QPushButton*> gameBtns;
+    std::vector<GameButton*> gameBtns;
     QPushButton *nextGenBtn;
     QPushButton *clearBtn;
 
     QGridLayout *layout;
+
+private slots:
+    void toggleBtn(int index);
 };
 
 

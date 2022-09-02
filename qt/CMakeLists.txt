@@ -14,7 +14,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-add_executable(qt main.cpp MainWindow.cpp MainWindow.h ../lib/board.hpp ../lib/board.cpp)
+add_executable(qt main.cpp MainWindow.cpp MainWindow.h ../lib/board.hpp ../lib/board.cpp GameButton.cpp GameButton.h)
 target_link_libraries(qt
         Qt6::Core
         Qt6::Gui
