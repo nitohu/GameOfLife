@@ -1,10 +1,11 @@
-#include <QApplication>
-#include <QPushButton>
+#include "MainWindow.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    QPushButton button("Hello world!", nullptr);
-    button.resize(200, 100);
-    button.show();
+
+    MainWindow window{};
+    window.setWindowTitle("Game of Life - Qt Version");
+    window.show();
+
     return QApplication::exec();
 }
