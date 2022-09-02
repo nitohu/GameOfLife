@@ -19,8 +19,10 @@ MainWindow::MainWindow(QWidget *parent)
         layout->addWidget(gameBtns.at(i), i/20, i%20);
     }
 
+    QObject::connect(nextGenBtn, &QPushButton::clicked, this, &MainWindow::nextGeneration);
     layout->addWidget(nextGenBtn, 21, 0, 1, 20);
 
+    QObject::connect(clearBtn, &QPushButton::clicked, this, &MainWindow::clearBoard);
     layout->addWidget(clearBtn, 22, 0, 1, 20);
 
     board = new Board(20, 20);
@@ -36,6 +38,17 @@ MainWindow::~MainWindow() {
     for (auto btn : gameBtns) delete btn;
 }
 
+void MainWindow::updateBoard() {
+    for (int i = 0; i < gameBtns.size(); i++) {
+        bool cs = board->getCellState(i);
+        gameBtns.at(i)->setText(cs ? "1" : "0");
+        QString style = QString(cs
+                                ? "background-color: gray;"
+                                : "background-color: white;");
+        gameBtns.at(i)->setStyleSheet(style);
+    }
+}
+
 void MainWindow::toggleBtn(int index) {
     board->toggleCell(index);
     bool cs = board->getCellState(index);
@@ -46,4 +59,12 @@ void MainWindow::toggleBtn(int index) {
     gameBtns.at(index)->setStyleSheet(style);
 }
 
+void MainWindow::nextGeneration() {
+    board->update();
+    updateBoard();
+}
 
+void MainWindow::clearBoard() {
+    board->reset();
+    updateBoard();
+}

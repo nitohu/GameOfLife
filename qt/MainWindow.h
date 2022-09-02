@@ -28,8 +28,12 @@ private:
 
     QGridLayout *layout;
 
+    void updateBoard();
+
 private slots:
     void toggleBtn(int index);
+    void nextGeneration();
+    void clearBoard();
 };
 
 

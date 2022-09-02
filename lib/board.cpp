@@ -166,3 +166,9 @@ void Board::toggleCell(unsigned int pos) {
     if (pos > (w*h-1)) return;
     *(board + pos) = !*(board + pos);
 }
+
+void Board::reset() {
+    for(int i = 0; i < h*w; i++) {
+        *(board + i) = false;
+    }
+}

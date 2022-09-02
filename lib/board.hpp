@@ -23,4 +23,5 @@ public:
 
     virtual void printBoard(bool showPos);
     virtual void update();
+    void reset();
 };
