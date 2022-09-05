@@ -1,7 +1,4 @@
 #include "GOLWindow.h"
-#include "GameButton.h"
-
-#include <iostream>
 
 GOLWindow::GOLWindow() : wxFrame(NULL, wxID_ANY, "Game of Life - wxWidgets Version") {
     board_width = 20;
@@ -38,14 +35,7 @@ void GOLWindow::initWindow() {
     CreateStatusBar();
     SetStatusText("Some status text");
     */
-    // Using panel positions the two texts over each other
-    /*
-    wxPanel *panel = new wxPanel(this);
-    wxStaticText *txt = new wxStaticText(panel, wxID_STATIC, "Some label hopefully displayed...");
-    wxStaticText *txt2 = new wxStaticText(panel, wxID_STATIC, "Some other label...");
-    // If sizer exists: sizer->Add(panel); // items in panel still get positions over each other
-    */
-    // Use sizer instead
+    // General Layout
     wxBoxSizer *pSizer = new wxBoxSizer(wxVERTICAL);
     wxFlexGridSizer *sizer = new wxFlexGridSizer(board_height, board_width, 1, 1);
     // Generate buttons used for playing the game
@@ -54,12 +44,13 @@ void GOLWindow::initWindow() {
         auto *btn = new GameButton(this, ID_GAME, "0");
         Bind(wxEVT_BUTTON, &GOLWindow::OnGameButton, this, ID_GAME);
         sizer->Add(btn);
+        game_buttons.push_back(btn);
     }
 
+    // Add grid to main Panel
     pSizer->Add(sizer);
     // Control buttons
     auto *nextBtn = new wxButton(this, ID_NEXT, "Next Step");
-    // pSizer->AddGrowableRow(board_height, 1);
     // Add nextBtn with proportion 1, expanding and set padding to 1
     pSizer->Add(nextBtn, 1, wxEXPAND | wxALL, 1);
 
@@ -72,7 +63,7 @@ void GOLWindow::initWindow() {
     Bind(wxEVT_MENU, &GOLWindow::OnHello, this, ID_HELLO);
     Bind(wxEVT_MENU, &GOLWindow::OnAbout, this, wxID_ABOUT);
     Bind(wxEVT_MENU, [=](wxCommandEvent&) { Close(true); }, wxID_EXIT);
-    // Bind buttons
+    // Bind leftover buttons
     Bind(wxEVT_BUTTON, &GOLWindow::OnNextStep, this, ID_NEXT);
     Bind(wxEVT_BUTTON, &GOLWindow::OnClear, this, ID_CLEAR);
 
@@ -87,19 +78,24 @@ void GOLWindow::OnAbout(wxCommandEvent &evt) {
 }
 
 void GOLWindow::OnNextStep(wxCommandEvent &evt) {
-    std::cout << "Simulate next step" << std::endl;
+    board->update();
+    updateButtons();
 }
 
 void GOLWindow::OnClear(wxCommandEvent &evt) {
-    std::cout << "Clear board" << std::endl;
+    board->reset();
+    updateButtons();
 }
 
 void GOLWindow::OnGameButton(wxCommandEvent &evt) {
-    std::cout << "Button clicked.. sure which one?" << std::endl;
     GameButton *btn = (GameButton*) evt.GetEventObject();
-    // TODO: Get index of button clicked (maybe need some class with static variable for counting the index)
-    // TODO: Update board with index the button was clicked
-    // TODO: Update label according to field state of board 
-    btn->SetLabel("1");
-    std::cout << btn << " " << btn->GetIndex() << std::endl;
+    int btnIndex = btn->GetIndex(); 
+    board->toggleCell(btnIndex);
+    btn->SetLabel(board->getCellState(btnIndex) ? "1" : "0");
+}
+
+void GOLWindow::updateButtons() {
+    for (int i = 0; i < game_buttons.size(); i++) {
+        game_buttons.at(i)->SetLabel(board->getCellState(i) ? "1" : "0");
+    }
 }

@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "../lib/board.hpp"
+#include "GameButton.h"
 
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
@@ -20,6 +21,10 @@ private:
     Board *board;
     int board_width;
     int board_height;
+    std::vector<GameButton*> game_buttons;
+
+    // Functions
+    void updateButtons();
     
     // Event Handlers
     void OnHello(wxCommandEvent &evt);
