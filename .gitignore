@@ -2,3 +2,4 @@
 console/cmake-build-debug/*
 qt/cmake-build-debug/*
 qt/.idea/*
+wx/main
